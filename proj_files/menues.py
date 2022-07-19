@@ -80,6 +80,9 @@ class Button:
 		self.clicked = False
 		self.clickCheck = False
 		self.notHolding = False
+		self.hovered = False
+
+		self.hover_sound = pygame.mixer.Sound("sounds/hover.wav")
 
 		self.displayed_font = self.font.render(self.text, True, self.fontColor)
 		self.shadow = self.highlightFont.render(self.text, True, (255 - int(self.fontColor[0]), 255 - int(self.fontColor[1]), 255 - int(self.fontColor[2])))
@@ -117,6 +120,14 @@ class Button:
 	
 		if self.rect.collidepoint(pos): # Shadow when mouse hovers over button.
 			self.buttonSurface.blit(self.shadow, (2,2))
+			# Only play the hover sound once.
+			if self.hovered == False:
+				self.hovered = True
+				self.hover_sound.play()
+
+		if self.rect.collidepoint(pos) == False and self.hovered == True: # Reset the hover variable.
+			self.hovered = False
+
 		self.buttonSurface.blit(self.displayed_font, (0,0))
 
 		self.display_surface.blit(self.buttonSurface, self.pos)

@@ -7,6 +7,7 @@ class Main:
 	def __init__(self):
 		self.screen = pygame.display.set_mode((1920, 1080), pygame.FULLSCREEN)
 		pygame.font.init()
+		pygame.mixer.init()
 		self.menuList = List()
 
 		self.gameState = 'mainMenu'
