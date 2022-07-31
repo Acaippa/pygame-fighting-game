@@ -4,6 +4,7 @@ from settings import*
 from healthbar import*
 import math
 import random
+from sounds import*
 
 from debug import*
 
@@ -74,6 +75,8 @@ class Player(pygame.sprite.Sprite):
 		self.enemy = None
 		self.animationDelayIndex = 0
 
+		self.sound = SFX()
+
 		self.InfoBar = InfoBar()
 
 	def walk_right(self):
@@ -99,11 +102,14 @@ class Player(pygame.sprite.Sprite):
 			self.enemy.hurt(self.force, self.pos[0])
 			self.attacking = False
 
+
 	def initiateAttack(self):
 		if (pygame.time.get_ticks() - self.punchTick) > self.attackSpeed:
 			self.punchTick = pygame.time.get_ticks()
+			self.sound.play_hit_air()
 			self.actionIndex = 0 # Set the action index to attack.
 			self.attacking = True # Change this here so we don't loop it. It needs to be reset after the entity has hit the enemy.
+
 
 	def turn_action(self, bool):
 		self.flipped = bool
@@ -285,6 +291,8 @@ class Player(pygame.sprite.Sprite):
 			self.maxSpeed = -5
 		else:
 			self.maxSpeed = 5
+
+		self.sound.play_hurt()
 
 class Enemy(Player):
 	def __init__(self, obsticles, entityList, pos):

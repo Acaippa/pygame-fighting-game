@@ -1,4 +1,5 @@
 import pygame
+from sounds import*
 
 class MainMenu:
 	def __init__(self):
@@ -82,7 +83,7 @@ class Button:
 		self.notHolding = False
 		self.hovered = False
 
-		self.hover_sound = pygame.mixer.Sound("sounds/hover.wav")
+		self.sound = SFX()
 
 		self.displayed_font = self.font.render(self.text, True, self.fontColor)
 		self.shadow = self.highlightFont.render(self.text, True, (255 - int(self.fontColor[0]), 255 - int(self.fontColor[1]), 255 - int(self.fontColor[2])))
@@ -104,10 +105,13 @@ class Button:
 				self.shadow = self.highlightFont.render(self.text, True, (255 - int(fontColor[0]), 255 - int(fontColor[1]), 255 - int(fontColor[2])))
 				self.clickCheck = True
 
+				self.sound.play_mouse_hold()
+
 		if self.rect.collidepoint(pos) == False and mouseClicked[0] and self.clickCheck == True: # Checking if the user left the button without releasing the click button.
 			self.displayed_font = self.font.render(self.text, True, self.fontColor)
 			self.shadow = self.highlightFont.render(self.text, True, (255 - int(self.fontColor[0]), 255 - int(self.fontColor[1]), 255 - int(self.fontColor[2])))
 			self.clickCheck = False
+
 
 		if self.rect.collidepoint(pos) and mouseClicked[0] == False and self.clickCheck == True: # Checking if the user released the button while inside the boundries of the button. If so the button is active.
 			self.displayed_font = self.font.render(self.text, True, self.fontColor)
@@ -117,13 +121,14 @@ class Button:
 				self.command()
 			self.clickCheck = False
 
+			self.sound.play_mouse_release()
 	
 		if self.rect.collidepoint(pos): # Shadow when mouse hovers over button.
 			self.buttonSurface.blit(self.shadow, (2,2))
 			# Only play the hover sound once.
 			if self.hovered == False:
 				self.hovered = True
-				self.hover_sound.play()
+				self.sound.play_menu_hover()
 
 		if self.rect.collidepoint(pos) == False and self.hovered == True: # Reset the hover variable.
 			self.hovered = False
