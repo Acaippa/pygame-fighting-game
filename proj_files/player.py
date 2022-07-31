@@ -71,7 +71,7 @@ class Player(pygame.sprite.Sprite):
 		self.shake = False
 		self.shakeCounter = 0
 		self.punchTick = 0
-		self.attackSpeed = 100 # The amount of milliseconds between a punch
+		self.attackSpeed = 300 # The amount of milliseconds between a punch
 		self.enemy = None
 		self.animationDelayIndex = 0
 
@@ -98,7 +98,7 @@ class Player(pygame.sprite.Sprite):
 		self.stamina -= self.staminaDecay
 
 	def attack_action(self):
-		if self.attacking and pygame.sprite.collide_mask(self, self.enemy):
+		if self.attacking and pygame.sprite.collide_mask(self, self.enemy) and self.shake != True:
 			self.enemy.hurt(self.force, self.pos[0])
 			self.attacking = False
 
@@ -300,6 +300,10 @@ class Enemy(Player):
 		self.counter = 0
 		self.entityList = entityList
 		self.distanceToPlayer = 0
+		self.attack_distance = 140
+
+	def nothing(self):
+		pass
 
 	def input(self):
 		# Get the player
@@ -315,11 +319,13 @@ class Enemy(Player):
 			self.distanceToPlayer = dist*-1
 
 		# Check how close the player is to the enemy
-		if self.distanceToPlayer < 115:
-			self.initiateAttack()
+		if self.distanceToPlayer < self.attack_distance:
+			random.choice([self.initiateAttack, self.nothing, self.nothing])()
 		else:
 			if self.pos[0] >= self.player.pos[0]:
-				self.walk_left()
+				random.choice([self.walk_left, self.nothing, self.nothing])()
 			else:
 				self.walk_right()
+
+		self.attack_distance = random.randint(120, 200)
 
